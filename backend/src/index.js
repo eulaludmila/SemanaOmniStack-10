@@ -2,10 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes')
 const cors = require('cors')
+const http = require('http')
+require('dotenv').config()
+const {setupWebSocket} = require('./websocket')
 
 const app = express();
 
-mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-mo2yz.mongodb.net/test?retryWrites=true&w=majority',{
+//extrair o servidor http fora do express
+const server = http.Server(app)
+
+setupWebSocket(server);
+
+mongoose.connect(process.env.BANCO,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -31,4 +39,4 @@ app.use(routes);
 
 
 
-app.listen(3333)
+server.listen(3333)
